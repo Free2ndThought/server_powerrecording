@@ -97,6 +97,54 @@ class SensorMapping:
 "       name: 'Stromsensor21-BLADL-01-001'," \
 "       ip: '192.168.188.120'," \
 "       domain: 'stromsensor21'}," \
+"   sensor:{" \
+"       name: 'Stromsensor22-BLADL-02-003'," \
+"       ip: '192.168.188.121'," \
+"       domain: 'stromsensor20'}," \
+"   sensor:{" \
+"       name: 'Stromsensor23-BLADL-02-002'," \
+"       ip: '192.168.188.122'," \
+"       domain: 'stromsensor23'}," \
+"   sensor:{" \
+"       name: 'Stromsensor24-BLADL-02-001'," \
+"       ip: '192.168.188.123'," \
+"       domain: 'stromsensor24'}," \
+"   sensor:{" \
+"       name: 'Stromsensor25-BLADL-03-010'," \
+"       ip: '192.168.188.124'," \
+"       domain: 'stromsensor25'}," \
+"   sensor:{" \
+"       name: 'Stromsensor26-BLADL-03-008'," \
+"       ip: '192.168.188.125'," \
+"       domain: 'stromsensor26'}," \
+"   sensor:{" \
+"       name: 'Stromsensor27-BLADL-04-008'," \
+"       ip: '192.168.188.126'," \
+"       domain: 'stromsensor27'}," \
+"   sensor:{" \
+"       name: 'Stromsensor28'," \
+"       ip: '192.168.188.127'," \
+"       domain: 'stromsensor28'}," \
+"   sensor:{" \
+"       name: 'Stromsensor29-BLADL-04-002'," \
+"       ip: '192.168.188.128'," \
+"       domain: 'stromsensor29'}," \
+"   sensor:{" \
+"       name: 'Stromsensor30-BLADL-04_003'," \
+"       ip: '192.168.188.129'," \
+"       domain: 'stromsensor30'}," \
+"   sensor:{" \
+"       name: 'Stromsensor31-BLADL-04-004'," \
+"       ip: '192.168.188.130'," \
+"       domain: 'stromsensor31'}," \
+"   sensor:{" \
+"       name: 'Stromsensor32-BLADL-04_005'," \
+"       ip: '192.168.188.131'," \
+"       domain: 'stromsensor32'}," \
+"   sensor:{" \
+"       name: 'Stromsensor33-BLADL-04-007'," \
+"       ip: '192.168.188.132'," \
+"       domain: 'stromsensor33'}," \
 
 
 
