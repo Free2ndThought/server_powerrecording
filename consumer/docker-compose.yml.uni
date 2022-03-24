@@ -1,0 +1,95 @@
+version: '3.7'
+services:
+  dmis_db:
+    image: "postgres:11"
+    container_name: "dmis_db-container"
+    restart: always
+    environment:
+      - POSTGRES_USER=dmis_dbuser
+      - POSTGRES_PASSWORD=dmis_dbpassword
+      - POSTGRES_DB=dmis_recordings_db
+    volumes:
+      - :/home/lehner/postgresql/data
+    ports:
+      - "5432:5432"
+
+  pika_consumer1:
+    build: .
+    container_name: "pika_consumer1"
+    depends_on:
+      - allnet_recordings_db
+    restart: always
+    command: ["./wait-for-it.sh", "dmis_db:5432", "--", "python3", "-u", "./pika_consumer.py"]
+    environment:
+      - BLADL_SETUP_NR=BLADL_00
+      - RABBIT_HOST=192.132.59.224
+
+  pika_consumer2:
+    build: .
+    container_name: "pika_consumer2"
+    depends_on:
+      - allnet_recordings_db
+    restart: always
+    command: ["./wait-for-it.sh", "allnet_recordings_db-container:5432", "--", "python3", "-u", "./pika_consumer.py"]
+    environment:
+      - BLADL_SETUP_NR=BLADL_01
+      - RABBIT_HOST=192.132.59.224
+
+  pika_consumer3:
+    build: .
+    container_name: "pika_consumer3"
+    depends_on:
+      - allnet_recordings_db
+    restart: always
+    command: ["./wait-for-it.sh", "allnet_recordings_db-container:5432", "--", "python3", "-u", "./pika_consumer.py"]
+    environment:
+      - BLADL_SETUP_NR=BLADL_03
+      - RABBIT_HOST=192.132.59.224
+
+  pika_consumer4:
+    build: .
+    container_name: "pika_consumer4"
+    depends_on:
+      - allnet_recordings_db
+    restart: always
+    command: ["./wait-for-it.sh", "allnet_recordings_db-container:5432", "--", "python3", "-u", "./pika_consumer.py"]
+    environment:
+      - BLADL_SETUP_NR=BLADL_04
+      - RABBIT_HOST=192.132.59.224
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+    - "8282:8282"
+    command:
+      - 'php'
+      - '-S'
+      - '[::]:8282'
+      - '-t'
+      - '/var/www/html'
+    entrypoint:
+      - 'entrypoint.sh'
+      - 'docker-php-entrypoint'
+
+  grafana:
+    image: grafana/grafana-enterprise:8.2.0
+    ports:
+      - "3050:3000"
+
+  vpn-client:
+    image: fengzhou/ipsec-vpn-client
+    environment:
+      - VPN_SERVER_IP=o0k977aiw1adfz3f.myfritz.net
+      - VPN_PSEC_PSK=dEn1fCu5jKwdjd2O
+      - VPN_USER=mlehner
+      - VPN_PASSWORD=Rock4l!fe #TODO redact
+      - VERBOSE=true
+
+volumes:
+  dmis_db-volume:
+    driver: local
+
+networks:
+  default:
+    name: mttq-net

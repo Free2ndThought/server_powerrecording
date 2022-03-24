@@ -1,0 +1,6 @@
+SETUP_NR = 0
+
+DEVICE_LIST = [
+    [1],
+    [],
+]

@@ -1,0 +1,11 @@
+# external IP FritzBox http://132.231.12.151/
+# ips 192.168.178. xxx are mapped to fritzbox:xxx
+# port 200 for CCU
+
+HOSTNAME_TO_IP = {
+    'BLADL_00_001' : '192.168.178.56',  #Sensor 1
+}
+
+HOSTNAME_TO_PORTS = {
+    'BLADL_00_001' : '80',  #Sensor 1
+}

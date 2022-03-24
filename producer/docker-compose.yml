@@ -1,0 +1,33 @@
+version: '3.7'
+services:
+  rabbitmq:
+    image: "rabbitmq:3.7-management"
+    container_name: "rabbit-container"
+    hostname: "rabbit1"
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
+    ports:
+      - "5672:5672" # Message Queue Main Port
+      - "8080:15672"
+    volumes:
+      - /var/lib/rabbitmq
+
+  allnetcrawler:
+    build: .
+    container_name: "allnetcrawler-container"
+    depends_on:
+      - rabbitmq
+    restart: always
+    environment:
+      - RABBIT_HOST=rabbit1
+
+volumes:
+  rabbit1-volume:
+    driver: local
+
+networks:
+  default:
+    external: true
+    name: mttq-net

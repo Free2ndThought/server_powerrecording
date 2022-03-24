@@ -40,7 +40,7 @@ class SensorMapping:
 "   sensor:{" \
 "       name: 'Stromsensor7-BLADL-02-004'," \
 "       ip: '192.168.188.106'," \
-"       domain: 'stromsensor7'}," \    #to here no WLAN configured
+"       domain: 'stromsensor7'}," \ 
 "   sensor:{" \
 "       name: 'Stromsensor8-BLADL-03-009'," \
 "       ip: '192.168.188.107'," \
@@ -130,7 +130,7 @@ class SensorMapping:
 "       ip: '192.168.188.128'," \
 "       domain: 'stromsensor29'}," \
 "   sensor:{" \
-"       name: 'Stromsensor30-BLADL-04_003'," \
+"       name: 'Stromsensor30-BLADL-04-003'," \
 "       ip: '192.168.188.129'," \
 "       domain: 'stromsensor30'}," \
 "   sensor:{" \
@@ -138,13 +138,42 @@ class SensorMapping:
 "       ip: '192.168.188.130'," \
 "       domain: 'stromsensor31'}," \
 "   sensor:{" \
-"       name: 'Stromsensor32-BLADL-04_005'," \
+"       name: 'Stromsensor32-BLADL-04-005'," \
 "       ip: '192.168.188.131'," \
 "       domain: 'stromsensor32'}," \
 "   sensor:{" \
 "       name: 'Stromsensor33-BLADL-04-007'," \
 "       ip: '192.168.188.132'," \
 "       domain: 'stromsensor33'}," \
+"   sensor:{" \
+"       name: 'Stromsensor34-BLADL-01-004'," \
+"       ip: '192.168.188.133'," \
+"       domain: 'stromsensor34'}," \
+"   sensor:{" \
+"       name: 'Stromsensor35-BLADL-01-005'," \
+"       ip: '192.168.188.134'," \
+"       domain: 'stromsensor35'}," \
+"   sensor:{" \
+"       name: 'Stromsensor36-BLADL-01-006'," \
+"       ip: '192.168.188.133'," \
+"       domain: 'stromsensor34'}," \
+"   sensor:{" \
+"       name: 'Stromsensor37-BLADL-01-007'," \
+"       ip: '192.168.188.136'," \
+"       domain: 'stromsensor37'}," \
+"   sensor:{" \
+"       name: 'Stromsensor38-BLADL-01-008'," \
+"       ip: '192.168.188.137'," \
+"       domain: 'stromsensor38'}," \
+"   sensor:{" \
+"       name: 'Stromsensor39-BLADL-01-009'," \
+"       ip: '192.168.188.138'," \
+"       domain: 'stromsensor39'}," \
+"   sensor:{" \
+"       name: 'Stromsensor40-BLADL-01-010'," \
+"       ip: '192.168.188.139'," \
+"       domain: 'stromsensor40'}," \
+"}"
 
 
 
