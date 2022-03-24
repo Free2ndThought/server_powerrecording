@@ -9,7 +9,7 @@ services:
       - POSTGRES_PASSWORD=dmis_dbpassword
       - POSTGRES_DB=dmis_recordings_db
     volumes:
-      - ${ PWD }/:/postgresql/data
+      - $(PWD)/:/postgresql/data
     ports:
       - "5432:5432"
 
