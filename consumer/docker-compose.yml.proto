@@ -9,7 +9,7 @@ services:
       - POSTGRES_PASSWORD=dmis_dbpassword
       - POSTGRES_DB=dmis_recordings_db
     volumes:
-      - :/home/lehner/postgresql/data
+      - /home/lehner/postgresql/data
     ports:
       - "5432:5432"
 
@@ -17,12 +17,12 @@ services:
     build: .
     container_name: "pika_consumer1"
     depends_on:
-      - allnet_recordings_db
+      - dmis_db
     restart: always
     command: ["./wait-for-it.sh", "dmis_db:5432", "--", "python3", "-u", "./pika_consumer.py"]
     environment:
       - BLADL_SETUP_NR=BLADL_00
-      - RABBIT_HOST=192.132.59.224
+      - RABBIT_HOST=rabbit1
 
   pika_consumer2:
     build: .
