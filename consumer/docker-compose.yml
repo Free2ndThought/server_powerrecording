@@ -19,7 +19,7 @@ services:
     depends_on:
       - dmis_db
     restart: always
-    command: ["./wait-for-it.sh", "dmis_db:5432", "--", "python3", "-u", "./pika_consumer.py"]
+    command: ["chmod +x wait-for-it.sh","./wait-for-it.sh", "dmis_db:5432", "--", "python3", "-u", "./pika_consumer.py"]
     environment:
       - BLADL_SETUP_NR=BLADL_00
       - RABBIT_HOST=rabbit1
@@ -44,14 +44,6 @@ services:
     ports:
       - "3050:3000"
 
-  vpn-client:
-    image: fengzhou/ipsec-vpn-client
-    environment:
-      - VPN_SERVER_IP=o0k977aiw1adfz3f.myfritz.net
-      - VPN_PSEC_PSK=dEn1fCu5jKwdjd2O
-      - VPN_USER=mlehner
-      - VPN_PASSWORD=Rock4l!fe #TODO redact
-      - VERBOSE=true
 
 volumes:
   dmis_db-volume:
