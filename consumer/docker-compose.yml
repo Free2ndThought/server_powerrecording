@@ -19,7 +19,7 @@ services:
     depends_on:
       - dmis_db
     restart: always
-    #command: ["./wait-for-it.sh", "dmis_db:5432", "--", "python3", "-u", "./pika_consumer.py"]
+    command: ["./wait-for-it.sh", "dmis_db:5432", "--", "python3", "-u", "./pika_consumer.py"]
     environment:
       - BLADL_SETUP_NR=BLADL_00
       - RABBIT_HOST=rabbit1
