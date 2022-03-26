@@ -8,7 +8,7 @@ RUN useradd --create-home appuser
 WORKDIR /home/appuser
 USER appuser
 
-COPY device_name_mapping.py.proto .
+COPY device_name_mapping.py .
 COPY AllnetPoll.py .
 COPY pooling.py .
 COPY pika_producer.py .
