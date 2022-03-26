@@ -11,7 +11,6 @@ USER appuser
 COPY wait-for-it.sh .
 COPY pika_consumer.py .
 
-RUN chmod +x /wait-for-it.sh
-RUN /wait-for-it.sh
+RUN ./wait-for-it.sh dmis_db:5432 -- python3 -u ./pika_consumer.py
 
 CMD ["python3", "-u", "./pika_consumer.py"]
