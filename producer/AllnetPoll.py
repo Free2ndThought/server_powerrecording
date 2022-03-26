@@ -9,16 +9,7 @@ from collections import OrderedDict
 
 from requests.adapters import HTTPAdapter, Retry
 
-try:
-    from device_name_mapping import HOSTNAME_TO_IP
-except ModuleNotFoundError as mnfe:
-    # TODO remove after debug
-    import os
-
-    files = [f for f in os.listdir('.') if os.path.isfile(f)]
-    for f in files:
-        print(f)
-    raise mnfe
+from device_name_mapping import HOSTNAME_TO_IP
 
 
 # TODO Welchen Zeitgeber verwendet Discovergy ? NTP ? Unixtime
