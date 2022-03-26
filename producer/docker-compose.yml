@@ -15,7 +15,8 @@ services:
       - /var/lib/rabbitmq
 
   allnetcrawler:
-    build: .
+    build:
+      context: .
     container_name: "allnetcrawler-container"
     depends_on:
       - rabbitmq
