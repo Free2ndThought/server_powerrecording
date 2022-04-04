@@ -27,6 +27,10 @@ services:
   adminer:
     image: adminer
     restart: always
+    environment:
+      - ADMINER_DEFAULT_SERVER=132.231.59.224:6543
+      - ADMINER_DEFAULT_USER=dmis_dbuser
+      - ADMINER_DEFAULT_PASSWORD=dmis_dbpassword
     ports:
     - "8282:8282"
     command:
