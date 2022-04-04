@@ -29,20 +29,17 @@ def parse_allnet_json(j_decoded):
                      'Geräte LED'     : None,
                      'Geräte LED 3'   : None
                     })
-    try:
         # for sub_dict in j_decoded:
         #    key = sub_dict['name']
         #    messwert = float(sub_dict['value'])
         #    d[key] = messwert
-        sensors = ET.fromstring(j_decoded)
-        for i in range(0, 6):
-            d[mapSensorIDToDict(i)] = sensors[i][2].text
-    except Exception as e:
-        print(e)
-        time.sleep(2)
-        # If the json is missing a key, the SQL insert fails if the missing key is an SQL-Primary-Key.
-        # We rather discard a single measurement, instead of crashing the whole system
-        d = None
+    sensors = ET.fromstring(j_decoded)
+    for i in range(0, 6):
+        measurement = sensors[i][2].text
+        if measurement == 'error':
+            d = None
+            return d
+        d[mapSensorIDToDict(i)] = sensors[i][2].text
     return d
 
 
