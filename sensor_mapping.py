@@ -1,9 +1,12 @@
+from typing import Dict
+
+
 class Sensor:
     name: str = ""
 
 
 class SensorMapping:
-    mapping: dict[str, str]
+    mapping: Dict[str, str]
 
     def __init__(self):
         mapping = {}
