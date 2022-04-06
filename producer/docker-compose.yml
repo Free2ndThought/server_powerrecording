@@ -20,7 +20,7 @@ services:
     container_name: "allnetcrawler-container"
     depends_on:
       - rabbitmq
-    #restart: always
+    restart: always
     environment:
       - RABBIT_HOST=rabbit1
 
