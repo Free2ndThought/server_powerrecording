@@ -11,7 +11,7 @@ services:
     volumes:
       - /docker/projects/lehner/postgresql/data
     ports:
-      - "6543:6543"
+      - "6543:5432"
 
   pika_consumer1:
     build: .
