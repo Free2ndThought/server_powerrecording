@@ -1,8 +1,12 @@
 from typing import Dict
+from telegram import Telegram
+
 
 
 class Sensor:
-    name: str = ""
+    name: str
+    workplace_id: int
+
 
 
 class SensorMapping:
