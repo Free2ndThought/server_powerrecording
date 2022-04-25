@@ -30,21 +30,9 @@ if __name__ == '__main__':
 
     time.sleep(3)  # sleep for SQL start
 
-    metadata = MetaData()
-    recordings_table = Table(bladl_setup_nr, metadata,
-                             Column('DeviceName', String, primary_key=True),
-                             Column('Unixtime Request', BIGINT, primary_key=True, autoincrement=False),
-                             Column('Unixtime Reply', BIGINT, primary_key=True, autoincrement=False),
-                             Column('Wechselspannung', postgresql.DOUBLE_PRECISION),
-                             Column('Wechselstrom', postgresql.DOUBLE_PRECISION),
-                             Column('Leistung', postgresql.DOUBLE_PRECISION),
-                             # TODO log more variables ? eg Leistungsfaktor, Frequenz ?
-                             )
-
     engine = create_engine(
         'postgresql://dmis_dbuser:dmis_dbpassword@dmis_db-container/dmis_recordings_db',
         echo=False)
-    metadata.create_all(engine)
 
     credentials = pika.PlainCredentials('rabbitmq', 'rabbitmq')  # TODO change username and password
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=5672, credentials=credentials))
@@ -58,36 +46,59 @@ if __name__ == '__main__':
         print("Tag ", method_frame.delivery_tag,
               " Received %0.2f kB %03d Messages" % ((len(body) / 1024), len(list_of_dicts)), flush=True)
 
+        table_dict_lists = {}
         list_of_dicts = [dict_key_filter(d) for d in list_of_dicts]
         # Convert Unixtime from seconds[float] to milliseconds[int] 
         # TODO round() instead of int() ?
         for d in list_of_dicts:
+            device_name = d['DeviceName']
+            del d['DeviceName']
             if type(d['Unixtime Request']) == float:
                 d['Unixtime Request'] = int(d['Unixtime Request'] * 1000)
             if type(d['Unixtime Reply']) == float:
                 d['Unixtime Reply'] = int(d['Unixtime Reply'] * 1000)
+            if device_name in table_dict_lists:
+                previous_list = table_dict_lists[device_name]
+                list(previous_list).append(d)
+                table_dict_lists[device_name] = previous_list
+            else:
+                table_dict_lists[device_name] = [d]
 
-        try:
-            # https://docs.sqlalchemy.org/en/13/core/tutorial.html#executing-multiple-statements
-            # runs as SQL-transaction
-            with engine.begin() as connection:
-                result = connection.execute(recordings_table.insert(), list_of_dicts)
-                assert result
-        except sqlalchemy.exc.IntegrityError as e:
-            print("sqlalchemy.exc.IntegrityError -> Postgres UPSERT DO_NOTHING")
-            print(e)
-            with engine.begin() as connection:
-                insert_stmt = insert(table=recordings_table, values=list_of_dicts)
-                do_nothing_stmt = insert_stmt.on_conflict_do_nothing(
-                    index_elements=['DeviceName', 'Unixtime Request', 'Unixtime Reply'])
-                result = connection.execute(do_nothing_stmt)
-                assert result
-        except Exception as e:
-            channel.basic_nack(method_frame.delivery_tag)
-            raise e
+        metadata = MetaData()
+        recordings_table_dict = {}
+        for (listkey, listvalue) in table_dict_lists:
+            recordings_table = Table(listkey, metadata,
+                                     Column('Unixtime Request', BIGINT, primary_key=True, autoincrement=False),
+                                     Column('Unixtime Reply', BIGINT, primary_key=True, autoincrement=False),
+                                     Column('Wechselspannung', postgresql.DOUBLE_PRECISION),
+                                     Column('Wechselstrom', postgresql.DOUBLE_PRECISION),
+                                     Column('Leistung', postgresql.DOUBLE_PRECISION))
+            recordings_table_dict[listkey] = recordings_table
 
-        # Acknowledge the message
-        channel.basic_ack(method_frame.delivery_tag)
+        metadata.create_all(engine)
+
+        for (listkey, recordings_table) in recordings_table_dict:
+            try:
+                # https://docs.sqlalchemy.org/en/13/core/tutorial.html#executing-multiple-statements
+                # runs as SQL-transaction
+                with engine.begin() as connection:
+                    result = connection.execute(recordings_table.insert(), list_of_dicts)
+                    assert result
+            except sqlalchemy.exc.IntegrityError as e:
+                print("sqlalchemy.exc.IntegrityError -> Postgres UPSERT DO_NOTHING")
+                print(e)
+                with engine.begin() as connection:
+                    insert_stmt = insert(table=recordings_table, values=list_of_dicts)
+                    do_nothing_stmt = insert_stmt.on_conflict_do_nothing(
+                        index_elements=['Unixtime Request', 'Unixtime Reply'])
+                    result = connection.execute(do_nothing_stmt)
+                    assert result
+            except Exception as e:
+                channel.basic_nack(method_frame.delivery_tag)
+                raise e
+
+            # Acknowledge the message
+            channel.basic_ack(method_frame.delivery_tag)
 
     # Cancel the consumer and return any pending messages
     requeued_messages = channel.cancel()
