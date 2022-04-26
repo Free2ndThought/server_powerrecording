@@ -63,6 +63,7 @@ if __name__ == '__main__':
         # TODO round() instead of int() ?
         error_free_list = []
         for d in list_of_dicts:
+            print(d)
             if type(d['Unixtime Request']) == float:
                 d['Unixtime Request'] = int(d['Unixtime Request'] * 1000)
             if type(d['Unixtime Reply']) == float:
@@ -75,6 +76,7 @@ if __name__ == '__main__':
             # https://docs.sqlalchemy.org/en/13/core/tutorial.html#executing-multiple-statements
             # runs as SQL-transaction
             with engine.begin() as connection:
+                print(f'start insert with list of length {error_free_list.__len__()}')
                 result = connection.execute(recordings_table.insert(), error_free_list)
                 assert result
         except sqlalchemy.exc.IntegrityError as e:
