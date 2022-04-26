@@ -87,19 +87,19 @@ if __name__ == '__main__':
 
         print(f'received recordings for the following devices: {values_of_device_dict.keys()}')
 
-        for (recording_device_name, recordings_table) in recordings_table_dict:
+        for recording_device_name in recordings_table_dict.keys():
             try:
                 # https://docs.sqlalchemy.org/en/13/core/tutorial.html#executing-multiple-statements
                 # runs as SQL-transaction
                 with engine.begin() as connection:
                     print(f'Begin insert to table of device {recording_device_name} with {values_of_device_dict[recording_device_name].__len__()} elements')
-                    result = connection.execute(recordings_table.insert(), values_of_device_dict[recording_device_name])
+                    result = connection.execute(recordings_table_dict.get(recording_device_name).insert(), values_of_device_dict[recording_device_name])
                     assert result
             except sqlalchemy.exc.IntegrityError as e:
                 print("sqlalchemy.exc.IntegrityError -> Postgres UPSERT DO_NOTHING")
                 print(e)
                 with engine.begin() as connection:
-                    insert_stmt = insert(table=recordings_table, values=values_of_device_dict[recording_device_name])
+                    insert_stmt = insert(table=recordings_table_dict.get(recording_device_name), values=values_of_device_dict[recording_device_name])
                     do_nothing_stmt = insert_stmt.on_conflict_do_nothing(
                         index_elements=['Unixtime Request', 'Unixtime Reply'])
                     result = connection.execute(do_nothing_stmt)
