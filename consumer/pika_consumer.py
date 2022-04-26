@@ -67,10 +67,12 @@ if __name__ == '__main__':
                 d['Unixtime Request'] = int(d['Unixtime Request'] * 1000)
             if type(d['Unixtime Reply']) == float:
                 d['Unixtime Reply'] = int(d['Unixtime Reply'] * 1000)
-            print(type(d['Wechselspannung']))
-            if type(d['Wechselspannung']) == float:
-                print (d)
+            try:
+                float(d['Wechselspannung']) # check if value is float
                 error_free_list.append(d)
+            except ValueError:
+                print ("Not a float, ignored")
+                continue
 
         try:
             # https://docs.sqlalchemy.org/en/13/core/tutorial.html#executing-multiple-statements
