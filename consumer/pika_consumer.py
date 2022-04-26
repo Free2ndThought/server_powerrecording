@@ -61,23 +61,26 @@ if __name__ == '__main__':
         list_of_dicts = [dict_key_filter(d) for d in list_of_dicts]
         # Convert Unixtime from seconds[float] to milliseconds[int] 
         # TODO round() instead of int() ?
+        error_free_list = []
         for d in list_of_dicts:
             if type(d['Unixtime Request']) == float:
                 d['Unixtime Request'] = int(d['Unixtime Request'] * 1000)
             if type(d['Unixtime Reply']) == float:
                 d['Unixtime Reply'] = int(d['Unixtime Reply'] * 1000)
+            if type(d['Wechselspannung']) == float:
+                error_free_list.append(d)
 
         try:
             # https://docs.sqlalchemy.org/en/13/core/tutorial.html#executing-multiple-statements
             # runs as SQL-transaction
             with engine.begin() as connection:
-                result = connection.execute(recordings_table.insert(), list_of_dicts)
+                result = connection.execute(recordings_table.insert(), error_free_list)
                 assert result
         except sqlalchemy.exc.IntegrityError as e:
             print("sqlalchemy.exc.IntegrityError -> Postgres UPSERT DO_NOTHING")
             print(e)
             with engine.begin() as connection:
-                insert_stmt = insert(table=recordings_table, values=list_of_dicts)
+                insert_stmt = insert(table=recordings_table, values=error_free_list)
                 do_nothing_stmt = insert_stmt.on_conflict_do_nothing(
                     index_elements=['DeviceName', 'Unixtime Request', 'Unixtime Reply'])
                 result = connection.execute(do_nothing_stmt)
