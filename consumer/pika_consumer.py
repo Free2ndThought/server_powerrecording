@@ -47,7 +47,7 @@ if __name__ == '__main__':
         print("Tag ", method_frame.delivery_tag,
               " Received %0.2f kB %03d Messages" % ((len(body) / 1024), len(list_of_dicts)), flush=True)
 
-        table_dict_lists = {}
+        values_of_device_dict = {} # dict of devicename -> list of recorded values of that device
         list_of_dicts = [dict_key_filter(d) for d in list_of_dicts]
         # Convert Unixtime from seconds[float] to milliseconds[int] 
         # TODO round() instead of int() ?
@@ -62,44 +62,44 @@ if __name__ == '__main__':
                 float(d['Wechselspannung']) # check if value is float
                 float(d['Leistung'])
                 float(d['Wechselstrom'])
-                if device_name in table_dict_lists:
-                    previous_list = table_dict_lists[device_name]
+                if device_name in values_of_device_dict:
+                    previous_list = values_of_device_dict.get(device_name)
                     list(previous_list).append(d)
-                    table_dict_lists[device_name] = previous_list
+                    values_of_device_dict[device_name] = previous_list
                 else:
-                    table_dict_lists[device_name] = [d]
+                    values_of_device_dict[device_name] = [d]
             except ValueError:
                 print("Not a float, ignored")
                 continue
 
         metadata = MetaData()
-        recordings_table_dict = {}
-        for (listkey, listvalue) in table_dict_lists:
-            recordings_table = Table(listkey, metadata,
+        recordings_table_dict = {} # dict devicename -> sql table objects
+        for (recording_device_name, _) in values_of_device_dict:
+            recordings_table = Table(recording_device_name, metadata,
                                      Column('Unixtime Request', BIGINT, primary_key=True, autoincrement=False),
                                      Column('Unixtime Reply', BIGINT, primary_key=True, autoincrement=False),
                                      Column('Wechselspannung', postgresql.DOUBLE_PRECISION),
                                      Column('Wechselstrom', postgresql.DOUBLE_PRECISION),
                                      Column('Leistung', postgresql.DOUBLE_PRECISION))
-            recordings_table_dict[listkey] = recordings_table
+            recordings_table_dict[recording_device_name] = recordings_table
 
         metadata.create_all(engine)
 
-        print(f'received recordings for the following devices: {table_dict_lists.keys()}')
+        print(f'received recordings for the following devices: {values_of_device_dict.keys()}')
 
-        for (listkey, recordings_table) in recordings_table_dict:
+        for (recording_device_name, recordings_table) in recordings_table_dict:
             try:
                 # https://docs.sqlalchemy.org/en/13/core/tutorial.html#executing-multiple-statements
                 # runs as SQL-transaction
                 with engine.begin() as connection:
-                    print(f'Begin insert to table of device {listkey} with {table_dict_lists[listkey].__len__()} elements')
-                    result = connection.execute(recordings_table.insert(), table_dict_lists[listkey])
+                    print(f'Begin insert to table of device {recording_device_name} with {values_of_device_dict[recording_device_name].__len__()} elements')
+                    result = connection.execute(recordings_table.insert(), values_of_device_dict[recording_device_name])
                     assert result
             except sqlalchemy.exc.IntegrityError as e:
                 print("sqlalchemy.exc.IntegrityError -> Postgres UPSERT DO_NOTHING")
                 print(e)
                 with engine.begin() as connection:
-                    insert_stmt = insert(table=recordings_table, values=list_of_dicts)
+                    insert_stmt = insert(table=recordings_table, values=values_of_device_dict[recording_device_name])
                     do_nothing_stmt = insert_stmt.on_conflict_do_nothing(
                         index_elements=['Unixtime Request', 'Unixtime Reply'])
                     result = connection.execute(do_nothing_stmt)
