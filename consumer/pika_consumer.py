@@ -68,6 +68,7 @@ if __name__ == '__main__':
             if type(d['Unixtime Reply']) == float:
                 d['Unixtime Reply'] = int(d['Unixtime Reply'] * 1000)
             if type(d['Wechselspannung']) == float:
+                print (d)
                 error_free_list.append(d)
 
         try:
