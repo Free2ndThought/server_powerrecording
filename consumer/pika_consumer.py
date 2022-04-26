@@ -69,6 +69,8 @@ if __name__ == '__main__':
                 d['Unixtime Reply'] = int(d['Unixtime Reply'] * 1000)
             try:
                 float(d['Wechselspannung']) # check if value is float
+                float(d['Leistung'])
+                float(d['Wechselstrom'])
                 error_free_list.append(d)
             except ValueError:
                 print ("Not a float, ignored")
