@@ -10,7 +10,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.types import BIGINT, String
+from sqlalchemy.types import BIGINT
 
 
 def dict_key_filter(d_in: dict) -> dict:
@@ -27,6 +27,7 @@ if __name__ == '__main__':
         rabbit_host = str(environ['RABBIT_HOST'])  # e.g 10.10.10.2
     else:
         bladl_setup_nr = 'BLADL_00'
+        rabbit_host = 'rabbit1'
 
     time.sleep(3)  # sleep for SQL start
 
@@ -84,12 +85,15 @@ if __name__ == '__main__':
 
         metadata.create_all(engine)
 
+        print(f'received recordings for the following devices: {table_dict_lists.keys()}')
+
         for (listkey, recordings_table) in recordings_table_dict:
             try:
                 # https://docs.sqlalchemy.org/en/13/core/tutorial.html#executing-multiple-statements
                 # runs as SQL-transaction
                 with engine.begin() as connection:
-                    result = connection.execute(recordings_table.insert(), list_of_dicts)
+                    print(f'Begin insert to table of device {listkey} with {table_dict_lists[listkey].__len__()} elements')
+                    result = connection.execute(recordings_table.insert(), table_dict_lists[listkey])
                     assert result
             except sqlalchemy.exc.IntegrityError as e:
                 print("sqlalchemy.exc.IntegrityError -> Postgres UPSERT DO_NOTHING")
