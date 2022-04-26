@@ -63,11 +63,11 @@ if __name__ == '__main__':
         # TODO round() instead of int() ?
         error_free_list = []
         for d in list_of_dicts:
-            print(d)
             if type(d['Unixtime Request']) == float:
                 d['Unixtime Request'] = int(d['Unixtime Request'] * 1000)
             if type(d['Unixtime Reply']) == float:
                 d['Unixtime Reply'] = int(d['Unixtime Reply'] * 1000)
+            print(type(d['Wechselspannung']))
             if type(d['Wechselspannung']) == float:
                 print (d)
                 error_free_list.append(d)
