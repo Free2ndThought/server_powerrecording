@@ -1,6 +1,5 @@
 from typing import Dict
-from telegram import Telegram
-
+import sqlalchemy
 
 
 class Sensor:
@@ -9,11 +8,6 @@ class Sensor:
 
 
 
-class SensorMapping:
-    mapping: Dict[str, str]
-
-    def __init__(self):
-        mapping = {}
 
 
 
