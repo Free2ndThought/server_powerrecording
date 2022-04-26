@@ -74,7 +74,7 @@ if __name__ == '__main__':
 
         metadata = MetaData()
         recordings_table_dict = {} # dict devicename -> sql table objects
-        for (recording_device_name, _) in values_of_device_dict:
+        for recording_device_name in values_of_device_dict.keys():
             recordings_table = Table(recording_device_name, metadata,
                                      Column('Unixtime Request', BIGINT, primary_key=True, autoincrement=False),
                                      Column('Unixtime Reply', BIGINT, primary_key=True, autoincrement=False),
