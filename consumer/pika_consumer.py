@@ -57,12 +57,19 @@ if __name__ == '__main__':
                 d['Unixtime Request'] = int(d['Unixtime Request'] * 1000)
             if type(d['Unixtime Reply']) == float:
                 d['Unixtime Reply'] = int(d['Unixtime Reply'] * 1000)
-            if device_name in table_dict_lists:
-                previous_list = table_dict_lists[device_name]
-                list(previous_list).append(d)
-                table_dict_lists[device_name] = previous_list
-            else:
-                table_dict_lists[device_name] = [d]
+            try:
+                float(d['Wechselspannung']) # check if value is float
+                float(d['Leistung'])
+                float(d['Wechselstrom'])
+                if device_name in table_dict_lists:
+                    previous_list = table_dict_lists[device_name]
+                    list(previous_list).append(d)
+                    table_dict_lists[device_name] = previous_list
+                else:
+                    table_dict_lists[device_name] = [d]
+            except ValueError:
+                print("Not a float, ignored")
+                continue
 
         metadata = MetaData()
         recordings_table_dict = {}
