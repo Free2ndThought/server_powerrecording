@@ -108,8 +108,8 @@ if __name__ == '__main__':
                 channel.basic_nack(method_frame.delivery_tag)
                 raise e
 
-            # Acknowledge the message
-            channel.basic_ack(method_frame.delivery_tag)
+        # Acknowledge the message
+        channel.basic_ack(method_frame.delivery_tag)
 
     # Cancel the consumer and return any pending messages
     requeued_messages = channel.cancel()
