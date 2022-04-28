@@ -1,10 +1,53 @@
-from typing import Dict
-import sqlalchemy
+import sqlalchemy.orm
+from sqlalchemy import Table, Column, MetaData, ForeignKey
+from sqlalchemy import create_engine
+from sensors import SENSORS
+from workplaces import WORKPLACE_TYPES, WORKPLACES
+from sqlalchemy.types import String, Integer
+from sqlalchemy.orm import declarative_base
+
+Base = declarative_base()
+
+DMIS_RECORDINGS_DB_PATH = "postgresql://dmis_dbuser:dmis_dbpassword@energy.uni-passau.de:5432/dmis_recordings_db"
+WORKPLACE_ENUM_TABLE_NAME = "workplaceType"
+SENSOR_TO_WORKPLACE_TABLE_NAME = "sensorToWorkplace"
+SENSOR_TO_DEVICETYPE_TABLE_NAME = "sensorToDeviceType"
+
+class SensorToWorkplace(Base):
+    __tablename__ = SENSOR_TO_WORKPLACE_TABLE_NAME
+    sensorID = Column(Integer, ForeignKey('sensors.id'))
+    workplaceID = Column(Integer, ForeignKey('workplace.id'))
+
+class SensorToDeviceGroup(Base):
+    __tablename__ = SENSOR_TO_DEVICETYPE_TABLE_NAME
+    sensorID = Column(Integer, ForeignKey('sensors.id'))
+    deviceTypeID = Column(Integer, ForeignKey('deviceType.id'))
+
+metadata = MetaData()
 
 
-class Sensor:
-    name: str
-    workplace_id: int
+
+if __name__ == '__main__':
+
+    engine = create_engine(
+        DMIS_RECORDINGS_DB_PATH,
+        echo=False)
+
+    Session = sqlalchemy.orm.sessionmaker(bind=engine)
+
+    session = Session()
+
+    # insert sensors
+    for sensor in SENSORS:
+        session.add(sensor)
+
+    #insert workplaces and types
+    for wtype in WORKPLACE_TYPES:
+        session.add(wtype)
+
+    for place in WORKPLACES:
+        session.add(place)
+
 
 
 
