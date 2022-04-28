@@ -12,6 +12,8 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.types import BIGINT
 
+DMIS_RECORDINGS_DB = 'postgresql://dmis_dbuser:dmis_dbpassword@dmis_db-container/dmis_recordings_db'
+
 
 def dict_key_filter(d_in: dict) -> dict:
     valid_keys = ('DeviceName', 'Unixtime Request', 'Unixtime Reply',
@@ -32,7 +34,7 @@ if __name__ == '__main__':
     time.sleep(3)  # sleep for SQL start
 
     engine = create_engine(
-        'postgresql://dmis_dbuser:dmis_dbpassword@dmis_db-container/dmis_recordings_db',
+        DMIS_RECORDINGS_DB,
         echo=False)
 
     credentials = pika.PlainCredentials('rabbitmq', 'rabbitmq')  # TODO change username and password
