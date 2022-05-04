@@ -44,7 +44,7 @@ services:
       - 'docker-php-entrypoint'
 
   grafana:
-    image: grafana/grafana-enterprise:8.2.0
+    image: grafana/grafana-enterprise
     ports:
       - "3050:3000"
 
