@@ -45,13 +45,19 @@ services:
 
   grafana:
     image: grafana/grafana-enterprise:latest
+    environment:
+      - GF_FEATURE_TOGGLES_ENABLE=ngalert
+    volumes:
+      - grafana_volume
     ports:
       - "3050:3000"
 
 volumes:
+
   dmis_db-volume:
     driver: local
-
+  grafana_volume:
+    driver: local
 
 networks:
   default:
