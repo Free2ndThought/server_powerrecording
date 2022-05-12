@@ -34,7 +34,7 @@ def parse_allnet_json(j_decoded):
         #    messwert = float(sub_dict['value'])
         #    d[key] = messwert
     sensors = ET.fromstring(j_decoded)
-    for i in range(0, 6):
+    for i in range(0, 6): #TODO sophisticated xml tree search
         measurement = sensors[i][2].text
         if measurement == 'error':
             d = None
