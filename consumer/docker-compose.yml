@@ -1,6 +1,6 @@
 version: '3.7'
 services:
-  dmis_db:
+  server_rec_db:
     image: "postgres:11"
     container_name: "dmis_db-container"
     restart: always
@@ -9,7 +9,7 @@ services:
       - POSTGRES_PASSWORD=dmis_dbpassword
       - POSTGRES_DB=dmis_recordings_db
     volumes:
-      - /docker/projects/lehner/postgresql/data
+      - server_rec_db-volume
     ports:
       - "6543:5432"
 
@@ -19,7 +19,7 @@ services:
     depends_on:
       - dmis_db
     restart: always
-    command: ["./wait-for-it.sh", "dmis_db:5432", "--", "python3", "-u", "./pika_consumer.py"]
+    command: ["./wait-for-it.sh", "server_rec_db:5432", "--", "python3", "-u", "./pika_consumer.py"]
     environment:
       - BLADL_SETUP_NR=BLADL_00
       - RABBIT_HOST=rabbit1
@@ -43,23 +43,11 @@ services:
       - 'entrypoint.sh'
       - 'docker-php-entrypoint'
 
-  grafana:
-    image: grafana/grafana-enterprise:latest
-    environment:
-      - GF_FEATURE_TOGGLES_ENABLE=ngalert
-    volumes:
-      - grafana_volume
-    ports:
-      - "3050:3000"
-
 volumes:
-
-  dmis_db-volume:
-    driver: local
-  grafana_volume:
+  server_rec_db-volume:
     driver: local
 
 networks:
   default:
     external: true
-    name: mttq-net
+    name: server-mttq-net
