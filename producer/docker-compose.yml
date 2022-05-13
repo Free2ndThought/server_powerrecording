@@ -1,6 +1,6 @@
-version: '3.7'
+version: '3.8'
 services:
-  rabbitmq:
+  server-rabbit:
     image: "rabbitmq:3.7-management"
     container_name: ${RABBITMQ_CONTAINER_NAME}
     hostname: "${RABBITMQ_HOSTNAME}"
@@ -12,20 +12,20 @@ services:
       - "${RABBITMQ_PORT_CON_DOCKER}:${RABBITMQ_PORT_CON_EXT}" # Message Queue Main Port
       - "${RABBITMQ_PORT_WEB_DOCKER}:${RABBITMQ_PORT_WEB_EXT}"
     volumes:
-      - /var/lib/rabbitmq
+      - server-rabbit-volume
 
-  allnetcrawler:
+  servercrawler:
     build:
       context: .
     container_name: ${ALLNETCRAWLER_NAME}
     depends_on:
-      - rabbitmq
+      - ${RABBIT_SERVICE_NAME}
     restart: always
     environment:
       - RABBIT_HOST=${RABBITMQ_HOSTNAME}
 
 volumes:
-  rabbit1-volume:
+  server-rabbit-volume:
     driver: local
 
 networks:
