@@ -1,42 +1,48 @@
-version: '3.7'
+version: '3.8'
 services:
   server_rec_db:
     image: "postgres:11"
-    container_name: "dmis_db-container"
+    container_name: "${SERVER_REC_DB_NAME_CONTAINER}"
     restart: always
     environment:
-      - POSTGRES_USER=dmis_dbuser
-      - POSTGRES_PASSWORD=dmis_dbpassword
-      - POSTGRES_DB=dmis_recordings_db
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${SERVER_REC_DB_NAME_CONTAINER}
     volumes:
-      - server_rec_db-volume
+      - ${SERVER_REC_DB_VOLUME}
     ports:
-      - "6543:5432"
+      - "${SERVER_REC_PORT_DOCKER}:${SERVER_REC_PORT_EXT}"
 
-  pika_consumer1:
+  server_consumer:
     build: .
-    container_name: "pika_consumer1"
+    container_name: "${CONSUMER_NAME_CONTAINER}"
     depends_on:
-      - dmis_db
+      - ${SERVER_REC_DB_SERVICE_NAME}
     restart: always
-    command: ["./wait-for-it.sh", "server_rec_db:5432", "--", "python3", "-u", "./pika_consumer.py"]
+    command: ["./wait-for-it.sh", "${DB_SERVICE_NAME}:${DB_PORT_EXT}", "--", "python3", "-u", "./pika_consumer.py"]
     environment:
-      - BLADL_SETUP_NR=BLADL_00
-      - RABBIT_HOST=rabbit1
+      - DB_SERVICE_NAME=${REC_DB_SERVICE_NAME}
+      - DB_CONTAINER_NAME=${DB_CONTAINER_NAME}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBIT_USER=${RABBIT_USER}
+      - RABBIT_PASSWORD=${RABBIT_PASSWORD}
+      - RABBIT_PORT=${RABBIT_PORT}
 
   adminer:
     image: adminer
     restart: always
     environment:
-      - ADMINER_DEFAULT_SERVER=132.231.59.224:6543
-      - ADMINER_DEFAULT_USER=dmis_dbuser
-      - ADMINER_DEFAULT_PASSWORD=dmis_dbpassword
+      - ADMINER_DEFAULT_SERVER=${DB_SERVICE_NAME}:${DB_PORT_EXT}
+      - ADMINER_DEFAULT_USER=${POSTGRES_USER}
+      - ADMINER_DEFAULT_PASSWORD=${POSTGRES_PASSWORD}
     ports:
-    - "8282:8282"
+    - "${ADMINER_WEB_PORT_DOCKER}:${ADMINER_WEB_PORT_EXT}"
     command:
       - 'php'
       - '-S'
-      - '[::]:8282'
+      - '[::]:${ADMINER_WEB_PORT}'
       - '-t'
       - '/var/www/html'
     entrypoint:
@@ -50,4 +56,4 @@ volumes:
 networks:
   default:
     external: true
-    name: server-mttq-net
+    name: ${NETWORK_NAME}
