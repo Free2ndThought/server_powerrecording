@@ -1,10 +1,18 @@
 from os import environ
 
 if __name__ == "__main__":
-    if ('RABBIT_HOST' in environ):
+    if 'RABBIT_HOST' in environ and 'RABBITMQ_PORT_CON_EXT' in environ:
         rabbit_host = str(environ['RABBIT_HOST'])  # e.g 10.10.10.2
+        rabbit_port = str(environ['RABBITMQ_PORT_CON_EXT'])
     else:
         rabbit_host = 'localhost'
+        rabbit_port = 5672
+    if ('RABBITMQ_DEFAULT_USER' in environ) and ('RABBIT_DEFAULT_PASSWORD' in environ):
+        rabbit_user = str(environ['RABBITMQ_DEFAULT_USER'])
+        rabbit_password = str(environ['RABBITMQ_DEFAULT_PASSWORD'])
+    else:
+        print('missing pika credentials in environment')
+        exit(10)
     import json
     import zlib
     import time
@@ -13,23 +21,23 @@ if __name__ == "__main__":
     import pika
 
     from AllnetPoll import AllnetPoll
-    from local_config import SETUP_NR, DEVICE_LIST
+    from local_config import SETUP_NR, DEVICE_LIST, CREDENTIALS
     from pooling import blocking_delay_generator, round_robin_pooling
 
 
     print("Connecting to Allnet-Plugs ... ", )
-    devices = ["BLADL_0%d_0%02d" % (SETUP_NR, i) for i in DEVICE_LIST[SETUP_NR]]
+    devices = ["strommessung_%d" % i for i in DEVICE_LIST[SETUP_NR]]
     assert len(devices)
     q_list = [SimpleQueue() for device in devices]
-    thread_list = [AllnetPoll(dev, q) for dev, q in zip(devices, q_list)]
+    thread_list = [AllnetPoll(dev, q, auth=CREDENTIALS) for dev, q in zip(devices, q_list)]
     [thread.start() for thread in thread_list]
     print("Sucessfully started all Allnet-Crawlers")
 
-
-    credentials = pika.PlainCredentials('rabbitmq', 'rabbitmq')
+    # noinspection PyUnboundLocalVariable
+    credentials = pika.PlainCredentials(rabbit_user, rabbit_password)
     for i in range(10):
         try:
-            connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=5672, credentials=credentials))
+            connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, port=rabbit_port, credentials=credentials))
             break
         except pika.exceptions.AMQPConnectionError:
             print("Couldn't connect to RabbiMQ # ", i)
