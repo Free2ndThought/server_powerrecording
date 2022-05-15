@@ -67,12 +67,15 @@ def mapSensorIDToDict(measurement_id: str) -> Optional[str]:
 class AllnetPoll(Thread):
     TIMEOUT = 20  # max response-time with one powerplug recorded = 11.14s
 
-    def __init__(self, name, output_queue):
+    def __init__(self, name, output_queue, auth=None):
         super(AllnetPoll, self).__init__()
         self.name = str(name)
         self.daemon = True
         self.ip = HOSTNAME_TO_IP[name]
-        self.url = "http://%s/xml/?mode=sensor" % self.ip
+        if auth is None:
+            self.url = "https://%s/xml/?mode=sensor" % self.ip
+        else:
+            self.url = f'https://{auth["username"]}:{auth["password"]}@{self.ip}/xml/?mode=sensor'
         self.output_queue = output_queue
         retry_counter = 0
         while retry_counter < 2:
