@@ -48,9 +48,3 @@ if __name__ == '__main__':
     with open('credentials.auth', 'wb') as cred_file:
         cred_file.write(f.encrypt(json.dumps(credentials_dec).encode('utf-8')))
         cred_file.close()
-
-    with open('credentials.auth', 'rb') as cred_file:
-        credentials_enc = cred_file.read()
-        creds_loaded = json.loads(f.decrypt(credentials_enc))
-        print(creds_loaded)
-        print(type(creds_loaded))
