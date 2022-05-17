@@ -9,20 +9,23 @@ services:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_USER}
     ports:
-      - "${RABBITMQ_PORT_CON_DOCKER}:${RABBITMQ_PORT_CON_EXT}" # Message Queue Main Port
-      - "${RABBITMQ_PORT_WEB_DOCKER}:${RABBITMQ_PORT_WEB_EXT}"
+      - "${RABBITMQ_PORT_CON_EXT}:${RABBITMQ_PORT_CON_DOCKER}" # Message Queue Main Port
+      - "${RABBITMQ_PORT_WEB_EXT}:${RABBITMQ_PORT_WEB_DOCKER}"
     volumes:
-      - server-rabbit-volume
+            - server-rabbit-volume:/docker/projects/volumes
 
   servercrawler:
     build:
       context: .
     container_name: ${ALLNETCRAWLER_NAME}
     depends_on:
-      - ${RABBIT_SERVICE_NAME}
+      - ${RABBITMQ_SERVICE_NAME}
     restart: always
     environment:
       - RABBIT_HOST=${RABBITMQ_HOSTNAME}
+      - RABBITMQ_PORT_CON_EXT=${RABBITMQ_PORT_CON_EXT}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASSWORD=${RABBITMQ_DEFAULT_USER}
 
 volumes:
   server-rabbit-volume:
