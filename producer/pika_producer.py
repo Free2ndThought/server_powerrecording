@@ -47,7 +47,7 @@ if __name__ == "__main__":
         print("Established Connection to RabbitMQ Server")
     except NameError:
         print("unable to connect to RabbitMQ, check parameters:")
-        for element,value in environ:
+        for element,value in environ.items():
             print(f'{element}: {value}')
         print("exiting with code 20")
         exit(20)
