@@ -3,6 +3,7 @@ from threading import Thread
 import time
 from time import time as unixtime
 import requests
+requests.packages.urllib3.disable_warnings()
 import xml.etree.ElementTree as ET
 
 from collections import OrderedDict
