@@ -31,7 +31,7 @@ def dict_key_filter(d_in: dict) -> dict:
 if __name__ == '__main__':
     # We use an environment variable to configure the consumer-container via docker-compose
     missing_environ = []
-    expected_environ = ['RABBIT_HOST', 'POSTGRES_USER', 'POSTGRES_PASSWORD', 'DB_CONTAINER_NAME',
+    expected_environ = ['RABBIT_HOST', 'POSTGRES_USER', 'POSTGRES_PASSWORD', 'DB_NAME',
                         'DB_SERVICE_NAME', 'RABBIT_USER', 'RABBIT_PASSWORD', 'RABBIT_PORT']
     for element in expected_environ:
         if element not in environ:
@@ -41,7 +41,7 @@ if __name__ == '__main__':
         rabbit_host = str(environ['RABBIT_HOST'])
         postgres_user = str(environ['POSTGRES_USER'])
         postgres_password = str(environ['POSTGRES_PASSWORD'])
-        db_name = str(environ['DB_CONTAINER_NAME'])
+        db_name = str(environ['DB_NAME'])
         service_name = str(environ['DB_SERVICE_NAME'])
         rabbit_user = str(environ['RABBIT_USER'])
         rabbit_password = str(environ['RABBIT_PASSWORD'])
