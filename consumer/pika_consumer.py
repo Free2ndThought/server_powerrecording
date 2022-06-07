@@ -31,11 +31,11 @@ def dict_key_filter(d_in: dict) -> dict:
 if __name__ == '__main__':
     # We use an environment variable to configure the consumer-container via docker-compose
     missing_environ = []
-    expected_environ = ['RABBIT_HOST', 'POSTGRES_USER', 'POSTGRES_PASSWORD', 'SERVER_REC_DB_CONTAINER_NAME',
-                        'SERVER_REC_DB_SERVICE_NAME', 'RABBIT_USER', 'RABBIT_PASSWORD', 'RABBIT_PORT']
+    expected_environ = ['RABBIT_HOST', 'POSTGRES_USER', 'POSTGRES_PASSWORD', 'DB_CONTAINER_NAME',
+                        'DB_SERVICE_NAME', 'RABBIT_USER', 'RABBIT_PASSWORD', 'RABBIT_PORT']
     for element in expected_environ:
         if element not in environ:
-            missing_environ.append(str.join(element, ', '))
+            missing_environ.append(element)
 
     if missing_environ.__len__() == 0:
         rabbit_host = str(environ['RABBIT_HOST'])
