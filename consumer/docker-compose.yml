@@ -9,7 +9,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${SERVER_REC_DB_CONTAINER_NAME}
     volumes:
-      - ${SERVER_REC_DB_VOLUME}
+      - ${SERVER_REC_DB_VOLUME}:/docker/projects/dimis/db
     ports:
       - "${SERVER_REC_PORT_EXT}:${SERVER_REC_PORT_DOCKER}"
 
