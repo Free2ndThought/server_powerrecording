@@ -85,7 +85,7 @@ class AllnetPoll(Thread):
                 adapter = HTTPAdapter(max_retries=retry)
                 session.mount('http://', adapter)
                 session.mount('https://', adapter)
-                response = session.get(self.url, timeout=AllnetPoll.TIMEOUT, )
+                response = session.get(self.url, timeout=AllnetPoll.TIMEOUT, verify=False)
                 assert response.status_code == 200, ('HTTP-Statuscode', response.status_code, response.content)
                 print(f'{self.url} is ok!')
                 retry_counter = 2
@@ -102,7 +102,7 @@ class AllnetPoll(Thread):
             while True:
                 try:
                     t_request = unixtime()
-                    response = session.get(self.url, timeout=AllnetPoll.TIMEOUT)
+                    response = session.get(self.url, timeout=AllnetPoll.TIMEOUT, verify=False)
                     assert response.status_code == 200, ('HTTP-Statuscode', response.status_code, response.content)
                     t_reply = unixtime()
 
