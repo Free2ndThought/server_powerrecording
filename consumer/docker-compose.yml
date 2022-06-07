@@ -11,7 +11,7 @@ services:
     volumes:
       - ${SERVER_REC_DB_VOLUME}
     ports:
-      - "${SERVER_REC_PORT_DOCKER}:${SERVER_REC_PORT_EXT}"
+      - "${SERVER_REC_PORT_EXT}:${SERVER_REC_PORT_DOCKER}"
 
   server_consumer:
     build: .
@@ -22,7 +22,7 @@ services:
     command: ["./wait-for-it.sh", "${DB_SERVICE_NAME}:${DB_PORT_EXT}", "--", "python3", "-u", "./pika_consumer.py"]
     environment:
       - DB_SERVICE_NAME=${REC_DB_SERVICE_NAME}
-      - DB_CONTAINER_NAME=${DB_CONTAINER_NAME}
+      - DB_CONTAINER_NAME=${SERVER_REC_DB_CONTAINER_NAME}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - RABBIT_HOST=${RABBIT_HOST}
@@ -34,15 +34,15 @@ services:
     image: adminer
     restart: always
     environment:
-      - ADMINER_DEFAULT_SERVER=${DB_SERVICE_NAME}:${DB_PORT_EXT}
+      - ADMINER_DEFAULT_SERVER=${REC_DB_SERVICE_NAME}:${SERVER_REC_PORT_DOCKER}
       - ADMINER_DEFAULT_USER=${POSTGRES_USER}
       - ADMINER_DEFAULT_PASSWORD=${POSTGRES_PASSWORD}
     ports:
-    - "${ADMINER_WEB_PORT_DOCKER}:${ADMINER_WEB_PORT_EXT}"
+    - "${ADMINER_WEB_PORT_EXT}:${ADMINER_WEB_PORT_DOCKER}"
     command:
       - 'php'
       - '-S'
-      - '[::]:${ADMINER_WEB_PORT}'
+      - '[::]:${ADMINER_WEB_PORT_EXT}'
       - '-t'
       - '/var/www/html'
     entrypoint:
