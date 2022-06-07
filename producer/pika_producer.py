@@ -6,7 +6,7 @@ if __name__ == "__main__":
         if 'RABBIT_IN_DOCKER' in environ:
             rabbit_port = str(environ['RABBITMQ_PORT_CON_DOCKER'])
         else:
-            rabbit_host = str(environ['RABBIT_PORT_CON_EXT'])
+            rabbit_host = str(environ['RABBITMQ_PORT_CON_EXT'])
     else:
         rabbit_host = 'localhost'
         rabbit_port = 5672
