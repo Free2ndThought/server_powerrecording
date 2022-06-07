@@ -32,7 +32,7 @@ if __name__ == '__main__':
     # We use an environment variable to configure the consumer-container via docker-compose
     missing_environ = []
     expected_environ = ['RABBIT_HOST', 'POSTGRES_USER', 'POSTGRES_PASSWORD', 'DB_NAME',
-                        'DB_SERVICE_NAME', 'RABBIT_USER', 'RABBIT_PASSWORD', 'RABBIT_PORT']
+                        'DB_CONTAINER_NAME', 'RABBIT_USER', 'RABBIT_PASSWORD', 'RABBIT_PORT']
     for element in expected_environ:
         if element not in environ:
             missing_environ.append(element)
@@ -42,7 +42,7 @@ if __name__ == '__main__':
         postgres_user = str(environ['POSTGRES_USER'])
         postgres_password = str(environ['POSTGRES_PASSWORD'])
         db_name = str(environ['DB_NAME'])
-        service_name = str(environ['DB_SERVICE_NAME'])
+        db_host_name = str(environ['DB_CONTAINER_NAME'])
         rabbit_user = str(environ['RABBIT_USER'])
         rabbit_password = str(environ['RABBIT_PASSWORD'])
         rabbit_port = str(environ['RABBIT_PORT'])
@@ -51,7 +51,7 @@ if __name__ == '__main__':
         print('Missing .env configuration:', missing_environ)
         exit(10)
 
-    DIMIS_RECORDINGS_DB_PATH = f'postgresql://{postgres_user}:{postgres_password}@{db_name}/{service_name}'
+    DIMIS_RECORDINGS_DB_PATH = f'postgresql://{postgres_user}:{postgres_password}@{db_host_name}/{db_name}'
 
     time.sleep(3)  # sleep for SQL start
 
