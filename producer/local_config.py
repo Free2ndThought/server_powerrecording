@@ -4,11 +4,11 @@ from cryptography import fernet
 import json
 
 SETUP_NR = 0
-USE_CREDENTIALS = True
+USE_CREDENTIALS = os.path.exists('credentials.auth')
 
 if USE_CREDENTIALS:
     with open('credentials.auth', 'rb') as cred_file:
-        with open('k.ey', 'rb') as key_file:
+        with open('.k.ey', 'rb') as key_file:
             key = key_file.read()
         f = fernet.Fernet(key)
         credentials_enc = cred_file.read()
@@ -36,8 +36,8 @@ def configure_authentication() -> dict:
 # use this to create key and insert credentials
 if __name__ == '__main__':
 
-    if os.path.exists('k.ey'):
-        with open('k.ey', 'rb') as key_file:
+    if os.path.exists('.k.ey'):
+        with open('.k.ey', 'rb') as key_file:
             key = key_file.read()
     else:
         f = fernet.Fernet.generate_key()
