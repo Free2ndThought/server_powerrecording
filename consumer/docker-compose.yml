@@ -30,7 +30,7 @@ services:
       - RABBIT_PASSWORD=${RABBIT_PASSWORD}
       - RABBIT_PORT=${RABBIT_PORT}
 
-  adminer:
+  server_adminer:
     image: adminer
     restart: always
     environment:
