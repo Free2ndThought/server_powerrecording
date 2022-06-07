@@ -6,7 +6,7 @@ if __name__ == "__main__":
         if 'RABBIT_IN_DOCKER' in environ:
             rabbit_port = str(environ['RABBITMQ_PORT_CON_DOCKER'])
         else:
-            rabbit_host = str(environ['RABBITMQ_PORT_CON_EXT'])
+            rabbit_port = str(environ['RABBITMQ_PORT_CON_EXT'])
     else:
         rabbit_host = 'localhost'
         rabbit_port = 5672
@@ -52,6 +52,7 @@ if __name__ == "__main__":
         print("unable to connect to RabbitMQ, check parameters:")
         for element,value in environ.items():
             print(f'{element}: {value}')
+        print(f"used docker port: {rabbit_port}")
         print("exiting with code 20")
         exit(20)
 
