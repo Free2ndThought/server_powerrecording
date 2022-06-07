@@ -53,6 +53,7 @@ volumes:
   server_rec_db-volume:
     driver: local
     driver_opts:
+      type: volume
       device: /docker/projects/dimis/db
       o: bind
 
