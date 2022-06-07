@@ -2,12 +2,12 @@ version: '3.8'
 services:
   server_rec_db:
     image: "postgres:11"
-    container_name: "${SERVER_REC_DB_NAME_CONTAINER}"
+    container_name: "${SERVER_REC_DB_CONTAINER_NAME}"
     restart: always
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${SERVER_REC_DB_NAME_CONTAINER}
+      - POSTGRES_DB=${SERVER_REC_DB_CONTAINER_NAME}
     volumes:
       - ${SERVER_REC_DB_VOLUME}
     ports:
@@ -15,13 +15,13 @@ services:
 
   server_consumer:
     build: .
-    container_name: "${CONSUMER_NAME_CONTAINER}"
+    container_name: "${CONSUMER_CONTAINER_NAME}"
     depends_on:
       - ${SERVER_REC_DB_SERVICE_NAME}
     restart: always
-    command: ["./wait-for-it.sh", "${DB_SERVICE_NAME}:${DB_PORT_EXT}", "--", "python3", "-u", "./pika_consumer.py"]
+    command: ["./wait-for-it.sh", "${SERVER_REC_DB_CONTAINER_NAME}:${SERVER_REC_PORT_DOCKER}", "--", "python3", "-u", "./pika_consumer.py"]
     environment:
-      - DB_SERVICE_NAME=${REC_DB_SERVICE_NAME}
+      - DB_SERVICE_NAME=${SERVER_REC_DB_SERVICE_NAME}
       - DB_CONTAINER_NAME=${SERVER_REC_DB_CONTAINER_NAME}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -34,7 +34,7 @@ services:
     image: adminer
     restart: always
     environment:
-      - ADMINER_DEFAULT_SERVER=${REC_DB_SERVICE_NAME}:${SERVER_REC_PORT_DOCKER}
+      - ADMINER_DEFAULT_SERVER=${SERVER_REC_DB_CONTAINER_NAME}:${SERVER_REC_PORT_DOCKER}
       - ADMINER_DEFAULT_USER=${POSTGRES_USER}
       - ADMINER_DEFAULT_PASSWORD=${POSTGRES_PASSWORD}
     ports:
