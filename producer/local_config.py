@@ -40,7 +40,9 @@ if __name__ == '__main__':
         with open('.k.ey', 'rb') as key_file:
             key = key_file.read()
     else:
-        f = fernet.Fernet.generate_key()
+        key = fernet.Fernet.generate_key()
+        with open('.k.ey', 'wb') as key_file:
+            key_file.write(key)
 
     f = fernet.Fernet(key)
     credentials_dec = configure_authentication()

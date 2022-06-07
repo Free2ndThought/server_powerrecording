@@ -13,7 +13,7 @@ COPY AllnetPoll.py .
 COPY pooling.py .
 COPY pika_producer.py .
 COPY local_config.py . 
-COPY k.ey .
+COPY .k.ey .
 COPY credentials.auth .
 #COPY wait-for-it.sh .
 
