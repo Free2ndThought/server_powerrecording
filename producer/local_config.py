@@ -4,10 +4,10 @@ from cryptography import fernet
 import json
 
 SETUP_NR = 0
-USE_CREDENTIALS = os.path.exists('credentials.auth')
+USE_CREDENTIALS = os.path.exists('.credentials.auth')
 
 if USE_CREDENTIALS:
-    with open('credentials.auth', 'rb') as cred_file:
+    with open('.credentials.auth', 'rb') as cred_file:
         with open('.k.ey', 'rb') as key_file:
             key = key_file.read()
         f = fernet.Fernet(key)
@@ -47,6 +47,6 @@ if __name__ == '__main__':
     f = fernet.Fernet(key)
     credentials_dec = configure_authentication()
 
-    with open('credentials.auth', 'wb') as cred_file:
+    with open('.credentials.auth', 'wb') as cred_file:
         cred_file.write(f.encrypt(json.dumps(credentials_dec).encode('utf-8')))
         cred_file.close()
