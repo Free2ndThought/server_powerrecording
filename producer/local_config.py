@@ -16,7 +16,7 @@ if USE_CREDENTIALS:
 else:
     CREDENTIALS = None
 
-devicelist = list(range(1,2))
+devicelist = list(range(1,3))
 #devicelist.remove(4)
 #devicelist.remove(14)
 #devicelist.remove(30)
