@@ -42,8 +42,14 @@ if __name__ == "__main__":
         except pika.exceptions.AMQPConnectionError:
             print("Couldn't connect to RabbiMQ # ", i)
             time.sleep(2)
-
-    print("Established Connection to RabbitMQ Server")
+    if connection:
+        print("Established Connection to RabbitMQ Server")
+    else:
+        print("unable to connect to RabbitMQ, check parameters:")
+        for element in environ:
+            print(element)
+        print("exiting with code 20")
+        exit(20)
     channel = connection.channel()
 
     channel.confirm_delivery()
