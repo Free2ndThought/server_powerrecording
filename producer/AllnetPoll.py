@@ -38,11 +38,11 @@ def parse_allnet_json(j_decoded):
     for sensor in sensors:
         measurement_id = sensor[1].text
         measurement = sensor[2].text
-        if measurement == 'error':
+        mapped_id = mapSensorIDToDict(measurement_id)
+        if measurement == 'error' and mapped_id is not None:
             d = None
             return d
-        mapped_id = mapSensorIDToDict(measurement_id)
-        if mapped_id is not None:
+        else:
             d[mapped_id] = measurement
     return d
 
